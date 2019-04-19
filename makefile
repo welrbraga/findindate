@@ -1,5 +1,6 @@
 install:
 	@echo "A instalaçao usa o parametro --install do script"
+	@chmod a+x findindate.sh
 	@sudo ./findindate.sh --install
 	@[ -f /usr/local/bin/findindate ] && echo "OK"
 
