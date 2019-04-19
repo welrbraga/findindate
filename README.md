@@ -16,6 +16,7 @@ available by GNU find but work with dates is very hard so I had created this lit
 After clone this repo or just download de file "findindate.sh" execute these commands:
 
 $ chmod +x findindate.sh
+
 $ sudo ./findindate.sh --install
 
 
