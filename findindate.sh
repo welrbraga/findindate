@@ -219,14 +219,22 @@ while [ "$1" ]; do
     exit 0;
     ;;
     "--install" )
-	if [ "$USER" != "root" ]; then
-	    echo "ERRO: A instalação deve ser feita pelo usuario root" >&2
-	    exit 1;
-	fi
-	FILE=`which findindate`
-	[ -f "$FILE" ] && rm "$FILE"
-	cp "$0" /usr/local/bin/findindate
-	chmod 0755 /usr/local/bin/findindate
+    	if [ "$USER" != "root" ]; then
+    	    echo "ERRO: A instalação deve ser feita pelo usuario root" >&2
+    	    exit 1;
+    	fi
+    	FILE=`which findindate`
+    	[ -f "$FILE" ] && rm "$FILE"
+    	cp "$0" /usr/local/bin/findindate
+    	chmod 0755 /usr/local/bin/findindate
+    ;;
+    "--uninstall" )
+      if [ "$USER" != "root" ]; then
+          echo "ERRO: A desinstalação deve ser feita pelo usuario root" >&2
+          exit 1;
+      fi
+      FILE=`which findindate`
+      [ -f "$FILE" ] && rm "$FILE"
   esac
   shift;
 

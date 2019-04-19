@@ -4,7 +4,6 @@ install:
 	@[ -f /usr/local/bin/findindate ] && echo "OK"
 
 uninstall:
-	@echo "Desinstalando o script"
-	@sudo rm /usr/local/bin/findindate
+	@echo "A desinstalaçao usa o parametro --uninstall do script"
+	@sudo ./findindate.sh --uninstall
 	@[ ! -f /usr/local/bin/findindate ] && echo "OK"
-

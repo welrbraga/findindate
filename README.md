@@ -12,13 +12,16 @@ I use to filter the files is that available by GNU find but work with dates is
 very hard so I had created this litle script to simplify these jobs.
 
 
-## INSTALL ##
+## INSTALL / UNINSTALL ##
 
-After clone this repo or just download de file "findindate.sh" execute these commands:
+After clone this repo or just download de file "findindate.sh" we can use make to install or uninstall the script:
 
-$ chmod +x findindate.sh
+$ make install
 
-$ sudo ./findindate.sh --install
+or
+
+$ make uninstall
+
 
 ## EXAMPLES ##
 
