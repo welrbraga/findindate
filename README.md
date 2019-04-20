@@ -60,3 +60,5 @@ $ make uninstall
 ## USAGE ##
 
 Check the output of "findindate --help" to get these examples
+
+
