@@ -7,25 +7,29 @@
 
 #Configura o find para localizar arquivos dentre duas datas
 between() {
-  touch -t "$1" /tmp/afterdate
-  touch -t "$2" /tmp/beforedate
+  BEFOREFILE=$(tempfile --prefix 'BEF-' --suffix .$USER)
+  AFTERFILE=$(tempfile --prefix 'AFT-' --suffix .$USER)
+  touch -t "$1" "$AFTERFILE"
+  touch -t "$2" "$BEFOREFILE"
 
-  echo  -newer /tmp/afterdate -and \! -newer /tmp/beforedate
+  echo  -newer "$AFTERFILE" -and \! -newer "$BEFOREFILE"
 }
 
 
 #Configura o find para localizar arquivos antes da data informada
 before() {
-  touch -t "$1" /tmp/beforedate
+  BEFOREFILE=$(tempfile --prefix 'BEF-' --suffix .$USER)
+  touch -t "$1" "$BEFOREFILE"
 
-  echo  \! -newer /tmp/beforedate
+  echo  \! -newer "$BEFOREFILE"
 }
 
 #Configura o find para localizar arquivos apos a data informada
 after() {
-  touch -t "$1" /tmp/afterdate
+  AFTERFILE=$(tempfile --prefix 'AFT-' --suffix .$USER)
+  touch -t "$1" "$AFTERFILE"
 
-  echo  -newer /tmp/afterdate
+  echo  -newer "$AFTERFILE"
 }
 
 #Valida a data passada a ser usada na funcao between()
