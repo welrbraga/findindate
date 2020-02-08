@@ -1,6 +1,6 @@
 # findindate
 
-Simple search for files in a specific date
+A complement for GNU Find Tool that simplify searchs for files in a specific date.
 
 How many files you've created yesterday? How can I archive your files of 2016?
 Is it possible to delete my files of July 2017?
@@ -59,8 +59,6 @@ $ make uninstall
 
 ## USAGE ##
 
-Note that findindate is not a standalone tool. It works creating de correct parameters to pass to GNU Find tool.
+Note that findindate is not a standalone tool. It works creating and passing the correct parameters to GNU Find tool.
 
 Doubts? Check the output of "findindate --help" to get examples or ask here.
-
-
