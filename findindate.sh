@@ -4,6 +4,9 @@
 
 # Wbraga - 2018-11-27
 
+#Versão atual do script. Altere-a sempre que precisar identificar uma
+#nova versão da ferramenta
+VERSION="2020.03"
 
 #Configura o find para localizar arquivos dentre duas datas
 between() {
@@ -119,7 +122,8 @@ cat <<EOF >&2
       find /var/log -type f \`findindate --before 201705010000\` -ls
       find /var/log -type f \`findindate --after 201705010000\` -ls
 
-2018 (C) - Welington R Braga
+findindate - v. $VERSION
+2020 (C) - Welington R Braga
 EOF
 
 }
@@ -197,6 +201,13 @@ while [ "$1" ]; do
     "--help" | "-h" )
 
       help ;
+      exit 1;
+
+    ;;
+
+    "--version" | "-v" )
+
+      echo "findindate - v. $VERSION" ;
       exit 1;
 
     ;;
