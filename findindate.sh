@@ -224,13 +224,19 @@ while [ "$1" ]; do
     ;;
     "--install" )
     	if [ "$USER" != "root" ]; then
-    	    echo "ERRO: A instalação deve ser feita pelo usuario root" >&2
+    	    echo "ERRO: A instalação deve ser feita pelo usuario root" >&2 ;
     	    exit 1;
     	fi
     	FILE=`which findindate`
     	[ -f "$FILE" ] && rm "$FILE"
-    	cp "$0" /usr/local/bin/findindate
-    	chmod 0755 /usr/local/bin/findindate
+      NEWFILE="/usr/local/bin/findindate"
+    	cp "$0" "$NEWFILE"
+    	chmod 0755 "$NEWFILE"
+      if [ -x "$NEWFILE" ]; then
+        echo "Instalado em $NEWFILE"
+      else
+        echo "Ocorreu um erro ao instalar a ferramenta"
+      fi
     ;;
     "--uninstall" )
       if [ "$USER" != "root" ]; then
@@ -238,7 +244,12 @@ while [ "$1" ]; do
           exit 1;
       fi
       FILE=`which findindate`
-      [ -f "$FILE" ] && rm "$FILE"
+      if [ -f "$FILE" ]; then
+        rm "$FILE"
+        echo "Removido de $FILE"
+      else
+        echo "Ocorreu um erro ao remover a ferramenta"
+      fi
   esac
   shift;
 
