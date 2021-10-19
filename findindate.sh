@@ -4,28 +4,35 @@
 
 # Wbraga - 2018-11-27
 
+#Versão atual do script. Altere-a sempre que precisar identificar uma
+#nova versão da ferramenta
+VERSION="2020.03"
 
 #Configura o find para localizar arquivos dentre duas datas
 between() {
-  touch -t "$1" /tmp/afterdate
-  touch -t "$2" /tmp/beforedate
+  BEFOREFILE=$(tempfile --prefix 'BEF-' --suffix .$USER)
+  AFTERFILE=$(tempfile --prefix 'AFT-' --suffix .$USER)
+  touch -t "$1" "$AFTERFILE"
+  touch -t "$2" "$BEFOREFILE"
 
-  echo  -newer /tmp/afterdate -and \! -newer /tmp/beforedate
+  echo  -newer "$AFTERFILE" -and \! -newer "$BEFOREFILE"
 }
 
 
 #Configura o find para localizar arquivos antes da data informada
 before() {
-  touch -t "$1" /tmp/beforedate
+  BEFOREFILE=$(tempfile --prefix 'BEF-' --suffix .$USER)
+  touch -t "$1" "$BEFOREFILE"
 
-  echo  \! -newer /tmp/beforedate
+  echo  \! -newer "$BEFOREFILE"
 }
 
 #Configura o find para localizar arquivos apos a data informada
 after() {
-  touch -t "$1" /tmp/afterdate
+  AFTERFILE=$(tempfile --prefix 'AFT-' --suffix .$USER)
+  touch -t "$1" "$AFTERFILE"
 
-  echo  -newer /tmp/afterdate
+  echo  -newer "$AFTERFILE"
 }
 
 #Valida a data passada a ser usada na funcao between()
@@ -115,7 +122,8 @@ cat <<EOF >&2
       find /var/log -type f \`findindate --before 201705010000\` -ls
       find /var/log -type f \`findindate --after 201705010000\` -ls
 
-2018 (C) - Welington R Braga
+findindate - v. $VERSION
+2020 (C) - Welington R Braga
 EOF
 
 }
@@ -197,6 +205,13 @@ while [ "$1" ]; do
 
     ;;
 
+    "--version" | "-v" )
+
+      echo "findindate - v. $VERSION" ;
+      exit 1;
+
+    ;;
+
     "--teste-me" )
       echo "Janeiro - 2001"
       $0 --inyear 2001 --inmonth 01; ls -lh /tmp/*date
@@ -220,13 +235,19 @@ while [ "$1" ]; do
     ;;
     "--install" )
     	if [ "$USER" != "root" ]; then
-    	    echo "ERRO: A instalação deve ser feita pelo usuario root" >&2
+    	    echo "ERRO: A instalação deve ser feita pelo usuario root" >&2 ;
     	    exit 1;
     	fi
     	FILE=`which findindate`
     	[ -f "$FILE" ] && rm "$FILE"
-    	cp "$0" /usr/local/bin/findindate
-    	chmod 0755 /usr/local/bin/findindate
+      NEWFILE="/usr/local/bin/findindate"
+    	cp "$0" "$NEWFILE"
+    	chmod 0755 "$NEWFILE"
+      if [ -x "$NEWFILE" ]; then
+        echo "Instalado em $NEWFILE"
+      else
+        echo "Ocorreu um erro ao instalar a ferramenta"
+      fi
     ;;
     "--uninstall" )
       if [ "$USER" != "root" ]; then
@@ -234,7 +255,12 @@ while [ "$1" ]; do
           exit 1;
       fi
       FILE=`which findindate`
-      [ -f "$FILE" ] && rm "$FILE"
+      if [ -f "$FILE" ]; then
+        rm "$FILE"
+        echo "Removido de $FILE"
+      else
+        echo "Ocorreu um erro ao remover a ferramenta"
+      fi
   esac
   shift;
 
