@@ -45,25 +45,25 @@ checkdate() {
     ;;
   02)
     lastday=28
-    if ((${YEAR} % 4 == 0)) &&
-      ((((${YEAR} % 100 != 0)) || ((${YEAR} % 400 == 0)))); then
+    if ((YEAR % 4 == 0)) &&
+      ((((YEAR % 100 != 0)) || ((YEAR % 400 == 0)))); then
       lastday=29
     fi #Determina se e ano bisexto
     ;;
   esac
 
-  if (($informyear == 1)) && (($informmonth == 1)); then
-    DATA1=$(date +${YEAR}${MONTH}010000)
-    DATA2=$(date +${YEAR}${MONTH}${lastday}2359.59)
+  if ((informyear == 1)) && ((informmonth == 1)); then
+    DATA1=$(date "+${YEAR}${MONTH}010000")
+    DATA2=$(date "+${YEAR}${MONTH}${lastday}2359.59")
   fi
-  if (($informyear == 1)) && (($informmonth == 0)); then
-    DATA1=$(date +${YEAR}01010000)
-    DATA2=$(date +${YEAR}12312359.59)
+  if ((informyear == 1)) && ((informmonth == 0)); then
+    DATA1=$(date "+${YEAR}01010000")
+    DATA2=$(date "+${YEAR}12312359.59")
   fi
-  if (($informyear == 0)) && (($informmonth == 1)); then
+  if ((informyear == 0)) && ((informmonth == 1)); then
     YEAR=$(date +%Y)
-    DATA1=$(date +${YEAR}${MONTH}010000)
-    DATA2=$(date +${YEAR}${MONTH}${lastday}2359.59)
+    DATA1=$(date "+${YEAR}${MONTH}010000")
+    DATA2=$(date "+${YEAR}${MONTH}${lastday}2359.59")
   fi
 }
 
@@ -272,7 +272,7 @@ while [ "$1" ]; do
 
 done
 
-if (($informyear == 1)) || (($informmonth == 1)); then
+if ((informyear == 1)) || ((informmonth == 1)); then
   between "$DATA1" "$DATA2"
 fi
 
