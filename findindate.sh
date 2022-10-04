@@ -10,8 +10,8 @@ VERSION="2020.03"
 
 #Configura o find para localizar arquivos dentre duas datas
 between() {
-  BEFOREFILE=$(tempfile --prefix 'BEF-' --suffix .$USER)
-  AFTERFILE=$(tempfile --prefix 'AFT-' --suffix .$USER)
+  BEFOREFILE=$(mktemp --suffix .B.$USER)
+  AFTERFILE=$(mktemp --suffix .A.$USER)
   touch -t "$1" "$AFTERFILE"
   touch -t "$2" "$BEFOREFILE"
 
@@ -21,7 +21,7 @@ between() {
 
 #Configura o find para localizar arquivos antes da data informada
 before() {
-  BEFOREFILE=$(tempfile --prefix 'BEF-' --suffix .$USER)
+  BEFOREFILE=$(mktemp --suffix .B.$USER)
   touch -t "$1" "$BEFOREFILE"
 
   echo  \! -newer "$BEFOREFILE"
@@ -29,7 +29,7 @@ before() {
 
 #Configura o find para localizar arquivos apos a data informada
 after() {
-  AFTERFILE=$(tempfile --prefix 'AFT-' --suffix .$USER)
+  AFTERFILE=$(mktemp --suffix .A.$USER)
   touch -t "$1" "$AFTERFILE"
 
   echo  -newer "$AFTERFILE"
