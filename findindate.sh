@@ -10,8 +10,8 @@ VERSION="2020.03"
 
 #Configura o find para localizar arquivos dentre duas datas
 between() {
-  BEFOREFILE=$(mktemp --suffix .B.$USER)
-  AFTERFILE=$(mktemp --suffix .A.$USER)
+  BEFOREFILE=$(mktemp --suffix ".B.$USER")
+  AFTERFILE=$(mktemp --suffix ".A.$USER")
   touch -t "$1" "$AFTERFILE"
   touch -t "$2" "$BEFOREFILE"
 
@@ -20,7 +20,7 @@ between() {
 
 #Configura o find para localizar arquivos antes da data informada
 before() {
-  BEFOREFILE=$(mktemp --suffix .B.$USER)
+  BEFOREFILE=$(mktemp --suffix ".B.$USER")
   touch -t "$1" "$BEFOREFILE"
 
   echo \! -newer "$BEFOREFILE"
@@ -28,7 +28,7 @@ before() {
 
 #Configura o find para localizar arquivos apos a data informada
 after() {
-  AFTERFILE=$(mktemp --suffix .A.$USER)
+  AFTERFILE=$(mktemp --suffix ".A.$USER")
   touch -t "$1" "$AFTERFILE"
 
   echo -newer "$AFTERFILE"
@@ -144,7 +144,7 @@ while [ "$1" ]; do
     DATA1=$1
     shift
     DATA2=$1
-    between $DATA1 $DATA2
+    between "$DATA1" "$DATA2"
 
     ;;
 
@@ -152,7 +152,7 @@ while [ "$1" ]; do
 
     shift
     DATA1=$1
-    before $DATA1
+    before "$DATA1"
 
     ;;
 
@@ -160,14 +160,14 @@ while [ "$1" ]; do
 
     shift
     DATA1=$1
-    after $DATA1
+    after "$DATA1"
 
     ;;
 
   "--today" | "-t")
 
     DATA1=$(date +%Y%m%d0000)
-    after $DATA1
+    after "$DATA1"
 
     ;;
 
@@ -175,7 +175,7 @@ while [ "$1" ]; do
 
     DATA1=$(date -d yesterday +%Y%m%d0000)
     DATA2=$(date -d yesterday +%Y%m%d2359.59)
-    between $DATA1 $DATA2
+    between "$DATA1" "$DATA2"
 
     ;;
 
@@ -273,7 +273,7 @@ while [ "$1" ]; do
 done
 
 if (($informyear == 1)) || (($informmonth == 1)); then
-  between $DATA1 $DATA2
+  between "$DATA1" "$DATA2"
 fi
 
 exit 0
