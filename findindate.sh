@@ -15,16 +15,15 @@ between() {
   touch -t "$1" "$AFTERFILE"
   touch -t "$2" "$BEFOREFILE"
 
-  echo  -newer "$AFTERFILE" -and \! -newer "$BEFOREFILE"
+  echo -newer "$AFTERFILE" -and \! -newer "$BEFOREFILE"
 }
-
 
 #Configura o find para localizar arquivos antes da data informada
 before() {
   BEFOREFILE=$(mktemp --suffix .B.$USER)
   touch -t "$1" "$BEFOREFILE"
 
-  echo  \! -newer "$BEFOREFILE"
+  echo \! -newer "$BEFOREFILE"
 }
 
 #Configura o find para localizar arquivos apos a data informada
@@ -32,45 +31,45 @@ after() {
   AFTERFILE=$(mktemp --suffix .A.$USER)
   touch -t "$1" "$AFTERFILE"
 
-  echo  -newer "$AFTERFILE"
+  echo -newer "$AFTERFILE"
 }
 
 #Valida a data passada a ser usada na funcao between()
 checkdate() {
   case $MONTH in # Determina se é mes de 30 ou 31 dias
-    01 | 03 | 05 | 07 | 08 | 10 | 12 )
-      lastday=31;
+  01 | 03 | 05 | 07 | 08 | 10 | 12)
+    lastday=31
     ;;
-    04 | 06 | 09 | 11 )
-      lastday=30;
+  04 | 06 | 09 | 11)
+    lastday=30
     ;;
-    02 )
-      lastday=28;
-      if (( ${YEAR} % 4 == 0 )) && \
-         (( (( ${YEAR} % 100 != 0 )) || (( ${YEAR} % 400 == 0 )) ))  ; \
-         then lastday=29 ;
-      fi #Determina se e ano bisexto
+  02)
+    lastday=28
+    if ((${YEAR} % 4 == 0)) &&
+      ((((${YEAR} % 100 != 0)) || ((${YEAR} % 400 == 0)))); then
+      lastday=29
+    fi #Determina se e ano bisexto
     ;;
   esac
 
-  if (( $informyear == 1 )) && (( $informmonth == 1 )); then
-    DATA1=`date +${YEAR}${MONTH}010000`;
-    DATA2=`date +${YEAR}${MONTH}${lastday}2359.59`;
+  if (($informyear == 1)) && (($informmonth == 1)); then
+    DATA1=$(date +${YEAR}${MONTH}010000)
+    DATA2=$(date +${YEAR}${MONTH}${lastday}2359.59)
   fi
-  if (( $informyear == 1 )) && (( $informmonth == 0 )); then
-    DATA1=`date +${YEAR}01010000`;
-    DATA2=`date +${YEAR}12312359.59`;
+  if (($informyear == 1)) && (($informmonth == 0)); then
+    DATA1=$(date +${YEAR}01010000)
+    DATA2=$(date +${YEAR}12312359.59)
   fi
-  if (( $informyear == 0 )) && (( $informmonth == 1 )); then
-     YEAR=`date +%Y`;
-     DATA1=`date +${YEAR}${MONTH}010000`;
-     DATA2=`date +${YEAR}${MONTH}${lastday}2359.59`;
+  if (($informyear == 0)) && (($informmonth == 1)); then
+    YEAR=$(date +%Y)
+    DATA1=$(date +${YEAR}${MONTH}010000)
+    DATA2=$(date +${YEAR}${MONTH}${lastday}2359.59)
   fi
 }
 
 help() {
-echo "-false"
-cat <<EOF >&2
+  echo "-false"
+  cat <<EOF >&2
     Find In Date - Auxilia na localização de arquivos por data usando o GNU Find
 
     --after, -a [[CC]YY]MMDDhhmm[.ss]
@@ -139,135 +138,142 @@ while [ "$1" ]; do
 
   case "$1" in
 
-    "--between"|"-w" )
+  "--between" | "-w")
 
-      shift;
-      DATA1=$1;
-      shift;
-      DATA2=$1;
-      between $DATA1 $DATA2;
-
-    ;;
-
-    "--before"|"-b" )
-
-      shift;
-      DATA1=$1;
-      before $DATA1;
+    shift
+    DATA1=$1
+    shift
+    DATA2=$1
+    between $DATA1 $DATA2
 
     ;;
 
-    "--after"|"-a" )
+  "--before" | "-b")
 
-      shift;
-      DATA1=$1;
-      after $DATA1;
-
-    ;;
-
-    "--today" |"-t" )
-
-      DATA1=`date +%Y%m%d0000`;
-      after $DATA1;
+    shift
+    DATA1=$1
+    before $DATA1
 
     ;;
 
-    "--yesterday"|"-y" )
+  "--after" | "-a")
 
-      DATA1=`date -d yesterday +%Y%m%d0000`;
-      DATA2=`date -d yesterday +%Y%m%d2359.59`;
-      between $DATA1 $DATA2;
-
-    ;;
-
-    "--inmonth"|"-m" )
-      informmonth=1;
-      shift;
-      MONTH=$1
-      checkdate
-      #Chamada ao termino do loop #between $DATA1 $DATA2;
+    shift
+    DATA1=$1
+    after $DATA1
 
     ;;
 
-    "--inyear"|"-Y" )
-      informyear=1;
-      shift;
-      YEAR=$1
-      checkdate
-      #Chamada ao termino do loop #between $DATA1 $DATA2;
+  "--today" | "-t")
+
+    DATA1=$(date +%Y%m%d0000)
+    after $DATA1
 
     ;;
 
-    "--help" | "-h" )
+  "--yesterday" | "-y")
 
-      help ;
-      exit 1;
-
-    ;;
-
-    "--version" | "-v" )
-
-      echo "findindate - v. $VERSION" ;
-      exit 1;
+    DATA1=$(date -d yesterday +%Y%m%d0000)
+    DATA2=$(date -d yesterday +%Y%m%d2359.59)
+    between $DATA1 $DATA2
 
     ;;
 
-    "--teste-me" )
-      echo "Janeiro - 2001"
-      $0 --inyear 2001 --inmonth 01; ls -lh /tmp/*date
-      echo
-      echo "Fevereiro - 2002"
-      $0 --inmonth 02 --inyear 2002; ls -lh /tmp/*date
-      echo
-      echo "Março - deste ano"
-      $0 --inmonth 03; ls -lh /tmp/*date
-      echo
-      echo "Todo ano - 2004"
-      $0 --inyear 2004; ls -lh /tmp/*date
-      echo
-      echo "Ontem"
-      $0 --yesterday; ls -lh /tmp/*date
-      echo
-      echo "Hoje"
-      $0 --today; ls -lh /tmp/*date
+  "--inmonth" | "-m")
+    informmonth=1
+    shift
+    MONTH=$1
+    checkdate
+    #Chamada ao termino do loop #between $DATA1 $DATA2;
 
-    exit 0;
     ;;
-    "--install" )
-    	if [ "$USER" != "root" ]; then
-    	    echo "ERRO: A instalação deve ser feita pelo usuario root" >&2 ;
-    	    exit 1;
-    	fi
-    	FILE=`which findindate`
-    	[ -f "$FILE" ] && rm "$FILE"
-      NEWFILE="/usr/local/bin/findindate"
-    	cp "$0" "$NEWFILE"
-    	chmod 0755 "$NEWFILE"
-      if [ -x "$NEWFILE" ]; then
-        echo "Instalado em $NEWFILE"
-      else
-        echo "Ocorreu um erro ao instalar a ferramenta"
-      fi
+
+  "--inyear" | "-Y")
+    informyear=1
+    shift
+    YEAR=$1
+    checkdate
+    #Chamada ao termino do loop #between $DATA1 $DATA2;
+
     ;;
-    "--uninstall" )
-      if [ "$USER" != "root" ]; then
-          echo "ERRO: A desinstalação deve ser feita pelo usuario root" >&2
-          exit 1;
-      fi
-      FILE=`which findindate`
-      if [ -f "$FILE" ]; then
-        rm "$FILE"
-        echo "Removido de $FILE"
-      else
-        echo "Ocorreu um erro ao remover a ferramenta"
-      fi
+
+  "--help" | "-h")
+
+    help
+    exit 1
+
+    ;;
+
+  "--version" | "-v")
+
+    echo "findindate - v. $VERSION"
+    exit 1
+
+    ;;
+
+  "--teste-me")
+    echo "Janeiro - 2001"
+    $0 --inyear 2001 --inmonth 01
+    ls -lh /tmp/*date
+    echo
+    echo "Fevereiro - 2002"
+    $0 --inmonth 02 --inyear 2002
+    ls -lh /tmp/*date
+    echo
+    echo "Março - deste ano"
+    $0 --inmonth 03
+    ls -lh /tmp/*date
+    echo
+    echo "Todo ano - 2004"
+    $0 --inyear 2004
+    ls -lh /tmp/*date
+    echo
+    echo "Ontem"
+    $0 --yesterday
+    ls -lh /tmp/*date
+    echo
+    echo "Hoje"
+    $0 --today
+    ls -lh /tmp/*date
+
+    exit 0
+    ;;
+  "--install")
+    if [ "$USER" != "root" ]; then
+      echo "ERRO: A instalação deve ser feita pelo usuario root" >&2
+      exit 1
+    fi
+    FILE=$(which findindate)
+    [ -f "$FILE" ] && rm "$FILE"
+    NEWFILE="/usr/local/bin/findindate"
+    cp "$0" "$NEWFILE"
+    chmod 0755 "$NEWFILE"
+    if [ -x "$NEWFILE" ]; then
+      echo "Instalado em $NEWFILE"
+    else
+      echo "Ocorreu um erro ao instalar a ferramenta"
+    fi
+    ;;
+  "--uninstall")
+    if [ "$USER" != "root" ]; then
+      echo "ERRO: A desinstalação deve ser feita pelo usuario root" >&2
+      exit 1
+    fi
+    FILE=$(which findindate)
+    if [ -f "$FILE" ]; then
+      rm "$FILE"
+      echo "Removido de $FILE"
+    else
+      echo "Ocorreu um erro ao remover a ferramenta"
+    fi
+    ;;
   esac
-  shift;
+  shift
 
 done
 
-if (( $informyear == 1 )) || (( $informmonth == 1 )); then
-  between $DATA1 $DATA2;
+if (($informyear == 1)) || (($informmonth == 1)); then
+  between $DATA1 $DATA2
 fi
 
-exit 0;
+exit 0
